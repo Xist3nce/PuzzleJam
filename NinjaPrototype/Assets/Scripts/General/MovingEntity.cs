@@ -6,7 +6,7 @@ public class MovingEntity : MonoBehaviour
 {
     public float moveTime = 0.4f;
 
-    DestinationDot targetDot;
+    public DestinationDot currentDot;
 
     float moveStartTime;
     Vector3 moveStartPos;
@@ -16,7 +16,7 @@ public class MovingEntity : MonoBehaviour
     {
         if (isMoving)
         {
-            transform.position = Vector3.Lerp(moveStartPos, targetDot.transform.position, (Time.time - moveStartTime) / moveTime);
+            transform.position = Vector3.Lerp(moveStartPos, currentDot.transform.position, (Time.time - moveStartTime) / moveTime);
             if(Time.time - moveStartTime > moveTime)
             {
                 isMoving = false;
@@ -26,17 +26,28 @@ public class MovingEntity : MonoBehaviour
 
     public bool GoToDot(DestinationDot d)
     {
-        if(targetDot != null)
+        if(currentDot != null)
         {
-            if (!targetDot.destinations.Contains(d))
+            if (!currentDot.destinations.Contains(d))
             {
                 return false;
             }
         }
-        targetDot = d;
+        currentDot = d;
         moveStartTime = Time.time;
         moveStartPos = transform.position;
         isMoving = true;
+
+        //flipping
+        if((moveStartPos - currentDot.transform.position).x > 0)
+        {
+            transform.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+        }
+        else
+        {
+            transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+        }
+
         return true;
     }
 
