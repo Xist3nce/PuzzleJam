@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-    public bool ControlsLocked;
     public float WalkSpeed;
 
 
@@ -12,7 +11,7 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (!ControlsLocked)
+        if (!GameManager.LockKeys)
         {
             if (((Input.GetAxis("Horizontal")) > 0) || ((Input.GetAxis("Horizontal")) < 0))
             {
