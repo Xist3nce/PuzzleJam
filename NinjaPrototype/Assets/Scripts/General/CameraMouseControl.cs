@@ -7,11 +7,6 @@ public class CameraMouseControl : MonoBehaviour
     public int scrollStartDistance = 100;
     public float maxMoveSpeed = 20.0f;
 
-    void Start()
-    {
-        
-    }
-
     void Update()
     {
         Vector2 mousePosFromCenter = (Vector2)Input.mousePosition - new Vector2(Screen.width, Screen.height) / 2;

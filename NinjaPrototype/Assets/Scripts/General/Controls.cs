@@ -7,36 +7,54 @@ public class Controls : MonoBehaviour
 {
     public MovingEntity player;
     public List<Enemy> enemys = new List<Enemy>();
+    public List<Gadget> gadgets = new List<Gadget>();
 
     bool roundStart = true;
     bool playerRound = true;
 
-    List<DestinationDot> newDotsList = new List<DestinationDot>();
-    List<DestinationDot> oldDotsList = new List<DestinationDot>();
+    List<Hoverable> newHoverables = new List<Hoverable>();
+    List<Hoverable> oldHoverables = new List<Hoverable>();
 
     public void RegisterEnemy(Enemy e)
     {
         enemys.Add(e);
     }
 
+    public void RegisterGadget(Gadget g)
+    {
+        gadgets.Add(g);
+    }
+
     void Update()
     {
         Collider2D[] allColliders = Physics2D.OverlapPointAll(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-        newDotsList.Clear();
+        newHoverables.Clear();
         foreach (Collider2D c2D in allColliders)
         {
-            if (c2D.gameObject.CompareTag("Dot"))
+            if (!c2D.isTrigger)
             {
-                DestinationDot dd = c2D.gameObject.GetComponent<DestinationDot>();
-                newDotsList.Add(dd);
-                dd.SetFocus(true);
+                Hoverable h = c2D.gameObject.GetComponentInParent<Hoverable>();
+                if (h)
+                {
+                    newHoverables.Add(h);
+                }
             }
         }
-        foreach(DestinationDot dd in oldDotsList.Except(newDotsList))
+        foreach(Hoverable h in oldHoverables.Except(newHoverables))
         {
-            dd.SetFocus(false);
+            if (h)
+            {
+                h.SetFocus(false);
+            }
         }
-        oldDotsList = newDotsList.ToList();
+        foreach (Hoverable h in newHoverables.Except(oldHoverables))
+        {
+            if (h)
+            {
+                h.SetFocus(true);
+            }
+        }
+        oldHoverables = newHoverables.ToList();
 
         if (playerRound)
         {
@@ -44,13 +62,28 @@ public class Controls : MonoBehaviour
             {
                 if (Input.GetMouseButtonDown(0))
                 {
-                    if (newDotsList.Count > 0)
+                    if (newHoverables.Count > 0)
                     {
                         if (player.IsReady())
                         {
-                            if (player.GoToDot(newDotsList.First()))
+                            foreach(Hoverable h in newHoverables)
                             {
-                                roundStart = false;
+                                if (h is DestinationDot)
+                                {
+                                    if (player.GoToDot((DestinationDot)newHoverables.First()))
+                                    {
+                                        roundStart = false;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    if (h.OnClick())
+                                    {
+                                        roundStart = false;
+                                        break;
+                                    }
+                                }
                             }
                         }
                     }
@@ -73,7 +106,11 @@ public class Controls : MonoBehaviour
         {
             if (roundStart)
             {
-                foreach(Enemy e in enemys)
+                foreach (Gadget g in gadgets)
+                {
+                    g.DoStep();
+                }
+                foreach (Enemy e in enemys)
                 {
                     e.DoStep();
                 }

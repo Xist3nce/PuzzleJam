@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MovingEntity : MonoBehaviour
+public abstract class MovingEntity : Hoverable
 {
     public float moveTime = 0.4f;
 

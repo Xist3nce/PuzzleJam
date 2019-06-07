@@ -5,10 +5,12 @@ using UnityEngine;
 public class Enemy : MovingEntity
 {
     public GameObject exclamationObject;
+    public GameObject confusedObject;
 
     public List<DestinationDot> path;
     public DestinationDot currentDotTarget;
     int pathPos = 0;
+    bool currentlyConfused;
 
     void Start()
     {
@@ -24,6 +26,8 @@ public class Enemy : MovingEntity
     {
         if (currentDot == currentDotTarget)
         {
+            confusedObject.SetActive(false);
+            currentlyConfused = false;
             pathPos++;
             currentDotTarget = path[pathPos % path.Count];
         }
@@ -69,6 +73,11 @@ public class Enemy : MovingEntity
         }
     }
 
+    public override void SetFocus(bool isInFocus)
+    {
+        
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Ninja"))
@@ -83,6 +92,18 @@ public class Enemy : MovingEntity
         {
             exclamationObject.SetActive(false);
         }
+    }
+
+    public void OnAlert(Vector2 pos, DestinationDot dot)
+    {
+        confusedObject.SetActive(true);
+        currentDotTarget = dot;
+        currentlyConfused = true;
+    }
+
+    public override bool OnClick()
+    {
+        return false;
     }
 }
 

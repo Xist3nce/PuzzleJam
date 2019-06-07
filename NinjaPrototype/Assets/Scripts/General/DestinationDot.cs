@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using UnityEditor.SceneManagement;
-using UnityEngine.SceneManagement;
 
 [ExecuteInEditMode]
-public class DestinationDot : MonoBehaviour
+public class DestinationDot : Hoverable
 {
     public Sprite outOfFocusSprite;
     public Sprite inFocusSprite;
@@ -18,6 +16,7 @@ public class DestinationDot : MonoBehaviour
 
     public List<DestinationDot> destinations;
 
+    #if UNITY_EDITOR
     void OnDrawGizmosSelected()
     {
         foreach(DestinationDot d in destinations)
@@ -28,8 +27,9 @@ public class DestinationDot : MonoBehaviour
         Handles.color = Color.yellow;
         Handles.DrawWireDisc(transform.position, Vector3.forward, travelRadius);
     }
+    #endif
 
-    public void SetFocus(bool isInFocus)
+    public override void SetFocus(bool isInFocus)
     {
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         if (isInFocus)
@@ -42,16 +42,20 @@ public class DestinationDot : MonoBehaviour
         }
     }
 
+    #if UNITY_EDITOR
     [ContextMenu("Update Connections")]
     public void RunUpdateConnectionWithEditorTime()
     {
         UpdateConnection(EditorApplication.timeSinceStartup);
     }
+    #endif
 
     public void UpdateConnection(double time)
     {
+        #if UNITY_EDITOR
         Undo.RecordObject(this, "UpdateConnection");
-        if(lastUpdateTime == time)
+        #endif
+        if (lastUpdateTime == time)
         {
             return;
         }
@@ -70,7 +74,14 @@ public class DestinationDot : MonoBehaviour
                 }
             }
         }
+        #if UNITY_EDITOR
         PrefabUtility.RecordPrefabInstancePropertyModifications(this);
+        #endif
+    }
+
+    public override bool OnClick()
+    {
+        return false;
     }
 }
 
