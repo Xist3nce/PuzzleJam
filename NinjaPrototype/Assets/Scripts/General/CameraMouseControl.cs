@@ -29,7 +29,7 @@ public class CameraMouseControl : MonoBehaviour
             transform.Translate(new Vector2(xMove, yMove) * Time.deltaTime);
 
             mouseScroll -= Input.mouseScrollDelta.y;
-            mouseScroll = Mathf.Clamp(mouseScroll, 0.0f, 10.0f);
+            mouseScroll = Mathf.Clamp(mouseScroll, -8.0f, 10.0f);
             cam.orthographicSize = standartCameraOrthoSize + (int)mouseScroll;
         }
     }
