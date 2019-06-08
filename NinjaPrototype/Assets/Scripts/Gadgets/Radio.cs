@@ -7,7 +7,7 @@ public class Radio : Gadget
 {
     public GameObject soundSprite;
     public float alertRadius;
-    public int playTimeLeft;
+    public bool alerting = false;
 
     #if UNITY_EDITOR
     public new void OnDrawGizmosSelected()
@@ -20,24 +20,24 @@ public class Radio : Gadget
 
     public override void TurnOn()
     {
-        playTimeLeft = 0;
         soundSprite.SetActive(true);
-        AlertEnemies(alertRadius);
+        alerting = true;
     }
 
     public override void TurnOff()
     {
-
+        soundSprite.SetActive(false);
+        alerting = false;
     }
 
-    public new void DoStep()
+    public override void DoStep()
     {
         base.DoStep();
-        if(playTimeLeft == 0)
+
+        if (alerting)
         {
-            TurnOff();
+            AlertEnemies(alertRadius);
         }
-        playTimeLeft--;
     }
 
     public override bool OnClick()

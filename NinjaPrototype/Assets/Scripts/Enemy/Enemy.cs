@@ -4,13 +4,19 @@ using UnityEngine;
 
 public class Enemy : MovingEntity
 {
+    public GameObject dotIndicatorPreset;
+
     public GameObject exclamationObject;
     public GameObject confusedObject;
 
     public List<DestinationDot> path;
-    public DestinationDot currentDotTarget;
+    public int standTime = 2;
+    DestinationDot currentDotTarget;
+    Gadget currentGadgetTarget;
+    int stepsLeftTillStateChange;
     int pathPos = 0;
-    bool currentlyConfused;
+
+    State state = State.Patrolling;
 
     void Start()
     {
@@ -24,14 +30,51 @@ public class Enemy : MovingEntity
 
     public void DoStep()
     {
-        if (currentDot == currentDotTarget)
+        if (stepsLeftTillStateChange <= 0)
         {
-            confusedObject.SetActive(false);
-            currentlyConfused = false;
-            pathPos++;
-            currentDotTarget = path[pathPos % path.Count];
+            if(state == State.Standing)
+            {
+                ChangeState(State.Patrolling);
+            }
         }
 
+        if (currentDot == currentDotTarget || currentDotTarget == null)
+        {
+            if(state == State.Investigating)
+            {
+                if (currentGadgetTarget)
+                {
+                    currentGadgetTarget.TurnOff();
+                    currentGadgetTarget = null;
+                }
+                ChangeState(State.Standing);
+            }
+            if(state == State.Patrolling)
+            {
+                pathPos++;
+                currentDotTarget = path[pathPos % path.Count];
+            }
+        }
+
+        if(state != State.Standing)
+        {
+            DestinationDot nextPosDot = FindAccessiblePathDot(currentDotTarget);
+            if (nextPosDot)
+            {
+                GoToDot(nextPosDot);
+            }
+        }
+
+        if(state == State.Standing)
+        {
+            FlipLookDirection();
+        }
+
+        stepsLeftTillStateChange--;
+    }
+
+    DestinationDot FindAccessiblePathDot(DestinationDot targetDot)
+    {
         markedDots.Clear();
         queue.Clear();
         foreach (DestinationDot dd in currentDot.destinations)
@@ -43,13 +86,12 @@ public class Enemy : MovingEntity
         }
 
         markedDots.Add(currentDot);
-        while(queue.Count > 0)
+        while (queue.Count > 0)
         {
             StartAndDestination sad = queue[0];
-            if(sad.destinationDot == currentDotTarget)
+            if (sad.destinationDot == targetDot)
             {
-                GoToDot(sad.startDot);
-                break;
+                return sad.startDot;
             }
             else
             {
@@ -60,7 +102,7 @@ public class Enemy : MovingEntity
                 else
                 {
                     markedDots.Add(sad.destinationDot);
-                    foreach(DestinationDot dd in sad.destinationDot.destinations)
+                    foreach (DestinationDot dd in sad.destinationDot.destinations)
                     {
                         if (dd.guardAccessible)
                         {
@@ -71,11 +113,31 @@ public class Enemy : MovingEntity
                 }
             }
         }
+        return null;
     }
 
+    List<GameObject> currentIndicators = new List<GameObject>();
     public override void SetFocus(bool isInFocus)
     {
-        
+        if (isInFocus)
+        {
+            /*DestinationDot nextPosDot = FindAccessiblePathDot(currentDotTarget);
+            if (nextPosDot)
+            {
+                currentIndicators.Add(Instantiate(dotIndicatorPreset, nextPosDot.transform.position, Quaternion.identity));
+            }*/
+            foreach(DestinationDot dd in path)
+            {
+                currentIndicators.Add(Instantiate(dotIndicatorPreset, dd.transform.position, Quaternion.identity));
+            }
+        }
+        else
+        {
+            foreach(GameObject g in currentIndicators)
+            {
+                Destroy(g);
+            }
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -94,11 +156,31 @@ public class Enemy : MovingEntity
         }
     }
 
-    public void OnAlert(Vector2 pos, DestinationDot dot)
+    public void OnAlert(Vector2 pos, DestinationDot dot, Gadget g)
     {
-        confusedObject.SetActive(true);
         currentDotTarget = dot;
-        currentlyConfused = true;
+        currentGadgetTarget = g;
+        ChangeState(State.Investigating);
+    }
+
+    void ChangeState(State newState)
+    {
+        if(state != State.Investigating && newState == State.Investigating)
+        {
+            confusedObject.SetActive(true);
+        }
+
+        if (state == State.Investigating && newState != State.Investigating)
+        {
+            confusedObject.SetActive(false);
+        }
+
+        if(newState == State.Standing)
+        {
+            stepsLeftTillStateChange = standTime;
+        }
+
+        state = newState;
     }
 
     public override bool OnClick()
@@ -116,4 +198,12 @@ struct StartAndDestination
     }
     public DestinationDot startDot;
     public DestinationDot destinationDot;
+}
+
+enum State
+{
+    Standing,
+    Patrolling,
+    Investigating,
+    Hunting
 }

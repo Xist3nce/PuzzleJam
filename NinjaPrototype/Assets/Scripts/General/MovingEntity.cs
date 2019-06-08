@@ -41,14 +41,29 @@ public abstract class MovingEntity : Hoverable
         //flipping
         if((moveStartPos - currentDot.transform.position).x > 0)
         {
-            transform.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+            LookLeft();
         }
         else
         {
-            transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+            LookRight();
         }
 
         return true;
+    }
+
+    public void LookLeft()
+    {
+        transform.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+    }
+
+    public void LookRight()
+    {
+        transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+    }
+
+    public void FlipLookDirection()
+    {
+        transform.rotation *= Quaternion.Euler(0.0f, 180.0f, 0.0f);
     }
 
     public bool IsReady()

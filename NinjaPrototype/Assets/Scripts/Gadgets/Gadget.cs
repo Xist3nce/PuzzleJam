@@ -8,6 +8,7 @@ public abstract class Gadget : Hoverable
 {
     public GameObject gadgetButtonPrefab;
     public GameObject keepHoverPrefab;
+    public GameObject dotIndicatorPreset;
     public float playerActivateRadius = 2.0f;
 
     public int[] possibleTimerDurations = {0};
@@ -33,11 +34,12 @@ public abstract class Gadget : Hoverable
             if (!c2D.isTrigger)
             {
                 Enemy enemy = c2D.GetComponentInParent<Enemy>();
-                enemy.OnAlert(transform.position, GetNearDot());
+                enemy.OnAlert(transform.position, GetNearDot(), this);
             }
         }
     }
 
+    List<GameObject> currentIndicators = new List<GameObject>();
     public override void SetFocus(bool isInFocus)
     {
         if (!gadgetInCountdown)
@@ -55,16 +57,34 @@ public abstract class Gadget : Hoverable
                 HideButtons();
             }
         }
+
+        if (isInFocus)
+        {
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, playerActivateRadius, LayerMask.GetMask("Dots"));
+            foreach (Collider2D c2D in colliders)
+            {
+                currentIndicators.Add(Instantiate(dotIndicatorPreset, c2D.transform.position, Quaternion.identity));
+            }
+        }
+        else
+        {
+            foreach (GameObject g in currentIndicators)
+            {
+                Destroy(g);
+            }
+        }
     }
 
     void ShowButtons()
     {
         keepHoverObject = Instantiate(keepHoverPrefab, transform.position, Quaternion.identity, transform);
         int i = 0;
+        float spaceBetweenButtons = 1.0f;
+        float buttonOffset = ((float)possibleTimerDurations.Length - 1.0f) * 0.5f * spaceBetweenButtons;
         foreach (int duration in possibleTimerDurations)
         {
             GameObject buttonObject = Instantiate(gadgetButtonPrefab);
-            buttonObject.transform.position = transform.position + Vector3.up + Vector3.right * i;
+            buttonObject.transform.position = transform.position + Vector3.up + Vector3.right * i * spaceBetweenButtons + Vector3.left * buttonOffset;
             GadgetButton gadgetButton = buttonObject.GetComponent<GadgetButton>();
             gadgetButton.SetFunctionToRun(ButtonClickReceive, possibleTimerDurations[i]);
             activeButtonList.Add(gadgetButton);
@@ -93,7 +113,7 @@ public abstract class Gadget : Hoverable
         HideButtons();
     }
 
-    public void DoStep()
+    public virtual void DoStep()
     {
         if (gadgetInCountdown)
         {
