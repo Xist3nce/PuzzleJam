@@ -5,9 +5,9 @@ using System.Linq;
 
 public class Controls : MonoBehaviour
 {
-    public MovingEntity player;
-    public List<Enemy> enemys = new List<Enemy>();
-    public List<Gadget> gadgets = new List<Gadget>();
+    Player player;
+    List<Enemy> enemys = new List<Enemy>();
+    List<Gadget> gadgets = new List<Gadget>();
 
     bool roundStart = true;
     bool playerRound = true;
@@ -23,6 +23,11 @@ public class Controls : MonoBehaviour
     public void RegisterGadget(Gadget g)
     {
         gadgets.Add(g);
+    }
+
+    private void Start()
+    {
+        player = FindObjectOfType<Player>();
     }
 
     void Update()

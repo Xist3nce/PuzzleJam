@@ -12,6 +12,24 @@ public abstract class MovingEntity : Hoverable
     Vector3 moveStartPos;
     bool isMoving = false;
 
+    public virtual void Start()
+    {
+        DestinationDot[] allDots = FindObjectsOfType<DestinationDot>();
+        float currentDist = float.MaxValue;
+
+        foreach(DestinationDot dd in allDots)
+        {
+            float distance = Vector3.Distance(dd.transform.position, transform.position);
+            if(distance < currentDist)
+            {
+                currentDist = distance;
+                currentDot = dd;
+            }
+        }
+
+        transform.position = currentDot.transform.position;
+    }
+
     public void Update()
     {
         if (isMoving)

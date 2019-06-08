@@ -18,8 +18,9 @@ public class Enemy : MovingEntity
 
     State state = State.Patrolling;
 
-    void Start()
+    public override void Start()
     {
+        base.Start();
         currentDotTarget = path[0];
         FindObjectOfType<Controls>().RegisterEnemy(this);
     }
