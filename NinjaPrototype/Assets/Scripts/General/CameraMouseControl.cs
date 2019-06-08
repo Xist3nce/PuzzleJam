@@ -8,12 +8,12 @@ public class CameraMouseControl : MonoBehaviour
     public float maxMoveSpeed = 20.0f;
     public float standartCameraOrthoSize = 10.0f;
 
-    Camera camera;
+    Camera cam;
     float mouseScroll = 0.0f;
 
     void Start()
     {
-        camera = Camera.main;
+        cam = Camera.main;
     }
 
     void Update()
@@ -30,13 +30,13 @@ public class CameraMouseControl : MonoBehaviour
 
             mouseScroll -= Input.mouseScrollDelta.y;
             mouseScroll = Mathf.Clamp(mouseScroll, 0.0f, 10.0f);
-            camera.orthographicSize = standartCameraOrthoSize + (int)mouseScroll;
+            cam.orthographicSize = standartCameraOrthoSize + (int)mouseScroll;
         }
     }
 
     bool MouseIsInWindow()
     {
-        Vector3 view = camera.ScreenToViewportPoint(Input.mousePosition);
+        Vector3 view = cam.ScreenToViewportPoint(Input.mousePosition);
         return !(view.x < 0 || view.x > 1 || view.y < 0 || view.y > 1);
     }
 }

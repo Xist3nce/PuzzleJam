@@ -185,7 +185,7 @@ MonoBehaviour:
   path:
   - {fileID: 0}
   - {fileID: 0}
-  standTime: 3
+  standTime: 2
 --- !u!50 &6218479904307926381
 Rigidbody2D:
   serializedVersion: 4

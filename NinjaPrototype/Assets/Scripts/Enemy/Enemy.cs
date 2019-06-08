@@ -52,6 +52,10 @@ public class Enemy : MovingEntity
             }
             if(state == State.Patrolling)
             {
+                if (path.Contains(currentDot))
+                {
+                    ChangeState(State.Standing);
+                }
                 pathPos++;
                 currentDotTarget = path[pathPos % path.Count];
             }
