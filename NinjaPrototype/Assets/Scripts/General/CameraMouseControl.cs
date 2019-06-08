@@ -26,7 +26,7 @@ public class CameraMouseControl : MonoBehaviour
             xMove *= Mathf.Sign(mousePosFromCenter.x);
             float yMove = Mathf.Lerp(0, maxMoveSpeed, (Mathf.Abs(mousePosFromCenter.y) - noScrollRectSize.y) / scrollStartDistance);
             yMove *= Mathf.Sign(mousePosFromCenter.y);
-            transform.Translate(new Vector2(xMove, yMove) * Time.deltaTime);
+            transform.Translate(new Vector2(xMove, yMove) * Time.deltaTime * cam.orthographicSize);
 
             mouseScroll -= Input.mouseScrollDelta.y;
             mouseScroll = Mathf.Clamp(mouseScroll, -8.0f, 10.0f);

@@ -663,7 +663,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scrollStartDistance: 200
-  maxMoveSpeed: 20
+  maxMoveSpeed: 2
   standartCameraOrthoSize: 10
 --- !u!20 &519420031
 Camera:
