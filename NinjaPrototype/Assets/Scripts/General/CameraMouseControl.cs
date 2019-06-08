@@ -36,6 +36,10 @@ public class CameraMouseControl : MonoBehaviour
 
     bool MouseIsInWindow()
     {
+        if (!Application.isFocused)
+        {
+            return false;
+        }
         Vector3 view = cam.ScreenToViewportPoint(Input.mousePosition);
         return !(view.x < 0 || view.x > 1 || view.y < 0 || view.y > 1);
     }
