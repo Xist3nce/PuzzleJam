@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Enemy : MovingEntity
 {
+    public GameObject deadEnemyPreset;
     public GameObject dotIndicatorPreset;
 
     public GameObject exclamationObject;
@@ -191,7 +192,9 @@ public class Enemy : MovingEntity
     [ContextMenu("Die")]
     public void Die()
     {
-
+        FindObjectOfType<Controls>().RemoveEnemy(this);
+        Instantiate(deadEnemyPreset, transform.position, transform.rotation);
+        Destroy(gameObject);
     }
 }
 

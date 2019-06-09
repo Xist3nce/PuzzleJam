@@ -178,6 +178,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveTime: 0.4
   currentDot: {fileID: 0}
+  deadEnemyPreset: {fileID: 3552933027117669480, guid: ae7cafb83da3eef4299e629215c2220a,
+    type: 3}
   dotIndicatorPreset: {fileID: 3801507427804528289, guid: 9335fe0eaa95d354f9d0d55e44f6a364,
     type: 3}
   exclamationObject: {fileID: 6218479903934368944}

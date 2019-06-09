@@ -17,6 +17,7 @@ public class RollingBarrel : Gadget
     float downMomentum = 0.0f;
     float radius;
     LayerMask wallsLayer;
+    LayerMask enemiesLayer;
 
     #if UNITY_EDITOR
     public new void OnDrawGizmosSelected()
@@ -31,6 +32,7 @@ public class RollingBarrel : Gadget
     {
         base.Start();
         wallsLayer = LayerMask.GetMask("Walls");
+        enemiesLayer = LayerMask.GetMask("Enemies");
         radius = GetComponent<CircleCollider2D>().radius;
     }
 
@@ -69,6 +71,11 @@ public class RollingBarrel : Gadget
             rolling = false;
         }
 
+        if (EnemyInFront() && (rolling || falling))
+        {
+            EnemyInFront().Die();
+        }
+
         if (rolling)
         {
             barrelVisuals.Rotate(Vector3.forward * Time.deltaTime * -110.0f * rollSpeed);
@@ -94,6 +101,17 @@ public class RollingBarrel : Gadget
             return (rh2d.distance < radius + 0.1f);
         }
         return false;
+    }
+
+    Enemy EnemyInFront()
+    {
+        RaycastHit2D rh2d = Physics2D.Raycast(transform.position, Vector2.right, 0.5f, enemiesLayer);
+        if (rh2d.collider)
+        {
+            Enemy enemy = rh2d.transform.GetComponent<Enemy>();
+            return enemy;
+        }
+        return null;
     }
 
     public override void TurnOn()

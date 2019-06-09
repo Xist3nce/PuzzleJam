@@ -20,6 +20,11 @@ public class Controls : MonoBehaviour
         enemys.Add(e);
     }
 
+    public void RemoveEnemy(Enemy e)
+    {
+        enemys.Remove(e);
+    }
+
     public void RegisterGadget(Gadget g)
     {
         gadgets.Add(g);
