@@ -6,13 +6,21 @@ using System.Linq;
 
 public class Radio : Gadget
 {
+    public GameObject gadgetButtonPrefab;
+    public GameObject rangeIndicatorPrefab;
+    public GameObject keepHoverPrefab;
     public GameObject soundSprite;
+
+    public int[] possibleTimerDurations = { 0 };
+    public List<GadgetButton> activeButtonList = new List<GadgetButton>();
+
     public float alertRadius;
     public bool alerting = false;
 
     bool gadgetInCountdown = false;
     int remainingDuration;
     GameObject keepHoverObject;
+    GameObject rangeIndicator;
 
     #if UNITY_EDITOR
     public new void OnDrawGizmosSelected()
@@ -56,20 +64,27 @@ public class Radio : Gadget
 
     public override void SetFocus(bool isInFocus){
         base.SetFocus(isInFocus);
-        if (!gadgetInCountdown)
+
+        if (isInFocus)
         {
-            if (isInFocus)
+            rangeIndicator = Instantiate(rangeIndicatorPrefab, transform.position - Vector3.forward * 5.0f, Quaternion.identity);
+            rangeIndicator.transform.localScale = Vector3.one * alertRadius * 2.0f;
+        }
+        else
+        {
+            if (rangeIndicator)
             {
-                Collider2D c2D = Physics2D.OverlapCircle(transform.position, playerActivateRadius, LayerMask.GetMask("Ninja"));
-                if (c2D)
-                {
-                    ShowButtons();
-                }
+                Destroy(rangeIndicator);
             }
-            else
-            {
-                HideButtons();
-            }
+        }
+
+        if (!gadgetInCountdown && isInFocus && !alerting && PlayerIsInRange())
+        {
+            ShowButtons();
+        }
+        else
+        {
+            HideButtons();
         }
     }
 
@@ -92,6 +107,11 @@ public class Radio : Gadget
         alerting = false;
     }
 
+    public override bool IsReady()
+    {
+        return true;
+    }
+
     public override void DoStep()
     {
         if (gadgetInCountdown)
@@ -112,6 +132,12 @@ public class Radio : Gadget
 
     public override bool OnClick()
     {
+        if (PlayerIsInRange())
+        {
+            HideButtons();
+            TurnOn();
+            return true;
+        }
         return false;
     }
 }

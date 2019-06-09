@@ -14,6 +14,11 @@ public class Cable : Gadget
 
     }
 
+    public override bool IsReady()
+    {
+        return true;
+    }
+
     public override bool OnClick()
     {
         return false;

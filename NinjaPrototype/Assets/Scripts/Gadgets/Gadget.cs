@@ -5,19 +5,16 @@ using UnityEditor;
 
 public abstract class Gadget : Hoverable
 {
-    public GameObject gadgetButtonPrefab;
-    public GameObject keepHoverPrefab;
     public GameObject dotIndicatorPreset;
     public float playerActivateRadius = 2.0f;
-
-    public int[] possibleTimerDurations = {0};
-    public List<GadgetButton> activeButtonList = new List<GadgetButton>();
 
     public abstract void TurnOn();
 
     public abstract void TurnOff();
 
-    private void Start()
+    public abstract bool IsReady();
+
+    public virtual void Start()
     {
         FindObjectOfType<Controls>().RegisterGadget(this);
     }
@@ -73,6 +70,12 @@ public abstract class Gadget : Hoverable
                 Destroy(g);
             }
         }
+    }
+
+    public void DestroyThisGadget()
+    {
+        SetFocus(false);
+        Destroy(gameObject);
     }
 
     public abstract void DoStep();

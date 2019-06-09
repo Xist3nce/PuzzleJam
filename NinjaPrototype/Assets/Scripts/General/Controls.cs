@@ -75,7 +75,7 @@ public class Controls : MonoBehaviour
                             {
                                 if (h is DestinationDot)
                                 {
-                                    if (player.GoToDot((DestinationDot)newHoverables.First()))
+                                    if (player.GoToDot((DestinationDot)h))
                                     {
                                         roundStart = false;
                                         break;
@@ -102,8 +102,19 @@ public class Controls : MonoBehaviour
             {
                 if (player.IsReady())
                 {
-                    playerRound = false;
-                    roundStart = true;
+                    bool allGadgetsDidSteps = true;
+                    foreach (Gadget g in gadgets)
+                    {
+                        if (!g.IsReady())
+                        {
+                            allGadgetsDidSteps = false;
+                        }
+                    }
+                    if (allGadgetsDidSteps)
+                    {
+                        roundStart = true;
+                        playerRound = false;
+                    }
                 }
             }
         }

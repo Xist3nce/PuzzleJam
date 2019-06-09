@@ -14,6 +14,11 @@ public class Door : Gadget
 
     }
 
+    public override bool IsReady()
+    {
+        return true;
+    }
+
     public override bool OnClick()
     {
         return false;
