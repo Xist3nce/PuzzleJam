@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5780155131847354998}
   - component: {fileID: 2799582442377372247}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: KeepHoverCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}

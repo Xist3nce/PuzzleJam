@@ -146,8 +146,8 @@ MonoBehaviour:
   playerActivateRadius: 2
   barrelVisuals: {fileID: 1678681240573148073}
   soundSprite: {fileID: 4305167907541006954}
-  rollSpeed: 5
-  fallAcceleration: 30
+  rollSpeed: 15
+  fallAcceleration: 50
   alertRadius: 10
 --- !u!1 &1678681240573148086
 GameObject:

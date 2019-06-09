@@ -67,26 +67,31 @@ public class Controls : MonoBehaviour
             {
                 if (Input.GetMouseButtonDown(0))
                 {
-                    if (newHoverables.Count > 0)
+                    if (player.IsReady())
                     {
-                        if (player.IsReady())
+                        Collider2D[] allClickColliders = Physics2D.OverlapPointAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), ~LayerMask.GetMask("HoverNoClick"));
+                        foreach (Collider2D c2D in allClickColliders)
                         {
-                            foreach(Hoverable h in newHoverables)
+                            if (!c2D.isTrigger)
                             {
-                                if (h is DestinationDot)
+                                Hoverable h = c2D.gameObject.GetComponentInParent<Hoverable>();
+                                if (h)
                                 {
-                                    if (player.GoToDot((DestinationDot)h))
+                                    if (h is DestinationDot)
                                     {
-                                        roundStart = false;
-                                        break;
+                                        if (player.GoToDot((DestinationDot)h))
+                                        {
+                                            roundStart = false;
+                                            break;
+                                        }
                                     }
-                                }
-                                else
-                                {
-                                    if (h.OnClick())
+                                    else
                                     {
-                                        roundStart = false;
-                                        break;
+                                        if (h.OnClick())
+                                        {
+                                            roundStart = false;
+                                            break;
+                                        }
                                     }
                                 }
                             }

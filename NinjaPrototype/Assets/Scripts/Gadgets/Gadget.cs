@@ -34,12 +34,23 @@ public abstract class Gadget : Hoverable
 
     public DestinationDot GetNearDot()
     {
-        Collider2D c2D = Physics2D.OverlapCircle(transform.position, playerActivateRadius, LayerMask.GetMask("Dots"));
-        if (c2D)
+        DestinationDot[] allDots = FindObjectsOfType<DestinationDot>();
+        DestinationDot nearestDot = null;
+        float nearestDotDistance = float.MaxValue;
+        foreach (DestinationDot dd in allDots)
         {
-            return c2D.GetComponent<DestinationDot>();
+            if(!Physics2D.Linecast(transform.position, dd.transform.position, LayerMask.GetMask("walls")))
+            {
+                float distance = Vector2.Distance(transform.position, dd.transform.position);
+                if (distance < nearestDotDistance)
+                {
+                    nearestDot = dd;
+                    nearestDotDistance = distance;
+                }
+            }
+
         }
-        return null;
+        return nearestDot;
     }
 
     public bool PlayerIsInRange()

@@ -126,11 +126,6 @@ public class Enemy : MovingEntity
     {
         if (isInFocus)
         {
-            /*DestinationDot nextPosDot = FindAccessiblePathDot(currentDotTarget);
-            if (nextPosDot)
-            {
-                currentIndicators.Add(Instantiate(dotIndicatorPreset, nextPosDot.transform.position, Quaternion.identity));
-            }*/
             foreach(DestinationDot dd in path)
             {
                 currentIndicators.Add(Instantiate(dotIndicatorPreset, dd.transform.position, Quaternion.identity));
