@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using System.Linq;
 
 public abstract class Gadget : Hoverable
 {
@@ -13,9 +12,6 @@ public abstract class Gadget : Hoverable
 
     public int[] possibleTimerDurations = {0};
     public List<GadgetButton> activeButtonList = new List<GadgetButton>();
-    bool gadgetInCountdown = false;
-    int remainingDuration;
-    GameObject keepHoverObject;
 
     public abstract void TurnOn();
 
@@ -39,25 +35,29 @@ public abstract class Gadget : Hoverable
         }
     }
 
+    public DestinationDot GetNearDot()
+    {
+        Collider2D c2D = Physics2D.OverlapCircle(transform.position, playerActivateRadius, LayerMask.GetMask("Dots"));
+        if (c2D)
+        {
+            return c2D.GetComponent<DestinationDot>();
+        }
+        return null;
+    }
+
+    public bool PlayerIsInRange()
+    {
+        Collider2D c2D = Physics2D.OverlapCircle(transform.position, playerActivateRadius, LayerMask.GetMask("Ninja"));
+        if (c2D)
+        {
+            return true;
+        }
+        return false;
+    }
+
     List<GameObject> currentIndicators = new List<GameObject>();
     public override void SetFocus(bool isInFocus)
     {
-        if (!gadgetInCountdown)
-        {
-            if (isInFocus)
-            {
-                Collider2D c2D = Physics2D.OverlapCircle(transform.position, playerActivateRadius, LayerMask.GetMask("Ninja"));
-                if (c2D)
-                {
-                    ShowButtons();
-                }
-            }
-            else
-            {
-                HideButtons();
-            }
-        }
-
         if (isInFocus)
         {
             Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, playerActivateRadius, LayerMask.GetMask("Dots"));
@@ -75,66 +75,7 @@ public abstract class Gadget : Hoverable
         }
     }
 
-    void ShowButtons()
-    {
-        keepHoverObject = Instantiate(keepHoverPrefab, transform.position, Quaternion.identity, transform);
-        int i = 0;
-        float spaceBetweenButtons = 1.0f;
-        float buttonOffset = ((float)possibleTimerDurations.Length - 1.0f) * 0.5f * spaceBetweenButtons;
-        foreach (int duration in possibleTimerDurations)
-        {
-            GameObject buttonObject = Instantiate(gadgetButtonPrefab);
-            buttonObject.transform.position = transform.position + Vector3.up + Vector3.right * i * spaceBetweenButtons + Vector3.left * buttonOffset;
-            GadgetButton gadgetButton = buttonObject.GetComponent<GadgetButton>();
-            gadgetButton.SetFunctionToRun(ButtonClickReceive, possibleTimerDurations[i]);
-            activeButtonList.Add(gadgetButton);
-            i++;
-        }
-    }
-
-    void HideButtons()
-    {
-        if (keepHoverObject)
-        {
-            Destroy(keepHoverObject);
-        }
-        while (activeButtonList.Count > 0)
-        {
-            GadgetButton gadgetButton = activeButtonList.First();
-            activeButtonList.Remove(gadgetButton);
-            gadgetButton.DestroyButton();
-        }
-    }
-
-    public void ButtonClickReceive(int duration)
-    {
-        remainingDuration = duration;
-        gadgetInCountdown = true;
-        HideButtons();
-    }
-
-    public virtual void DoStep()
-    {
-        if (gadgetInCountdown)
-        {
-            if (remainingDuration == 0)
-            {
-                TurnOn();
-                gadgetInCountdown = false;
-            }
-            remainingDuration--;
-        }
-    }
-
-    public DestinationDot GetNearDot()
-    {
-        Collider2D c2D = Physics2D.OverlapCircle(transform.position, playerActivateRadius, LayerMask.GetMask("Dots"));
-        if (c2D)
-        {
-            return c2D.GetComponent<DestinationDot>();
-        }
-        return null;
-    }
+    public abstract void DoStep();
 
     #if UNITY_EDITOR
     public void OnDrawGizmosSelected()

@@ -192,6 +192,12 @@ public class Enemy : MovingEntity
     {
         return false;
     }
+
+    [ContextMenu("Die")]
+    public void Die()
+    {
+
+    }
 }
 
 struct StartAndDestination

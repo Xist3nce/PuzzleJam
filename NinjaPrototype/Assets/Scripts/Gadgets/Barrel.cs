@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Cable : Gadget
+public class Barrel : Gadget
 {
     public override void TurnOn()
     {
