@@ -8,6 +8,7 @@ public class Cable : Gadget
     public Sprite sparkSprite;
     public float killRadius = 0.5f;
 
+    bool isKilling = false;
     SpriteRenderer r;
 
     #if UNITY_EDITOR
@@ -27,13 +28,16 @@ public class Cable : Gadget
 
     public void Update()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, killRadius, LayerMask.GetMask("Enemies"));
-        foreach(Collider2D c2D in colliders)
+        if (isKilling)
         {
-            Enemy enemy = c2D.GetComponent<Enemy>();
-            if (enemy)
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, killRadius, LayerMask.GetMask("Enemies"));
+            foreach (Collider2D c2D in colliders)
             {
-                enemy.Die();
+                Enemy enemy = c2D.GetComponent<Enemy>();
+                if (enemy)
+                {
+                    enemy.Die();
+                }
             }
         }
     }
@@ -41,6 +45,7 @@ public class Cable : Gadget
     public override void TurnOn()
     {
         r.sprite = sparkSprite;
+        isKilling = true;
     }
 
     public override void TurnOff()
