@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8916957274574445796}
   - component: {fileID: 1582624876649972185}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: dotindicator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -48,7 +48,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 06efcf1a6f862154ba2e64c80be91132, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

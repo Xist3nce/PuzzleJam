@@ -95,10 +95,10 @@ public class RollingBarrel : Gadget
 
     bool WallInFront()
     {
-        RaycastHit2D rh2d = Physics2D.Raycast(transform.position, Vector2.right, 1.0f, wallsLayer);
+        RaycastHit2D rh2d = Physics2D.Raycast(transform.position, Vector2.right, 10.0f, wallsLayer);
         if (rh2d.collider)
         {
-            return (rh2d.distance < radius + 0.1f);
+            return (rh2d.distance < radius + 0.2f);
         }
         return false;
     }
