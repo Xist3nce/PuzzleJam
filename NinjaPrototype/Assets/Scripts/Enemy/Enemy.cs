@@ -154,7 +154,7 @@ public class Enemy : MovingEntity
         {
             if (!evidenceSound.isPlaying && !gunSound.isPlaying && !endLevelAfterShot)
             {
-                FindObjectOfType<Controls>().BlankScreen();
+                FindObjectOfType<Controls>().BlankScreen(true);
                 gunSound.Play();
                 endLevelAfterShot = true;
             }

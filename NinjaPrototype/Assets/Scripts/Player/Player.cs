@@ -13,4 +13,16 @@ public class Player : MovingEntity
     {
         return false;
     }
+
+    public override bool GoToDot(DestinationDot d)
+    {
+        if (d)
+        {
+            if (!string.IsNullOrEmpty(d.levelToLoad))
+            {
+                FindObjectOfType<Controls>().WinLevel(d.levelToLoad);
+            }
+        }
+        return base.GoToDot(d);
+    }
 }

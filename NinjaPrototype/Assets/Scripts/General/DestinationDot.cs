@@ -6,6 +6,7 @@ using UnityEditor;
 [ExecuteInEditMode]
 public class DestinationDot : Hoverable
 {
+    public string levelToLoad;
     public Sprite outOfFocusSprite;
     public Sprite inFocusSprite;
     public bool guardAccessible = true;

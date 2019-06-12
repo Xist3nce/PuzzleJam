@@ -6,6 +6,7 @@ using UnityEditor;
 public class Cable : Gadget
 {
     public AudioSource stripSoundSource;
+    public AudioSource sizzleSound;
     public Sprite sparkSprite;
     public float killRadius = 0.5f;
 
@@ -31,6 +32,13 @@ public class Cable : Gadget
     {
         if (isKilling)
         {
+            if (!stripSoundSource.isPlaying)
+            {
+                if (!sizzleSound.isPlaying)
+                {
+                    sizzleSound.Play();
+                }
+            }
             Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, killRadius, LayerMask.GetMask("Enemies"));
             foreach (Collider2D c2D in colliders)
             {
@@ -48,6 +56,7 @@ public class Cable : Gadget
         r.sprite = sparkSprite;
         isKilling = true;
         stripSoundSource.Play();
+
     }
 
     public override void TurnOff()

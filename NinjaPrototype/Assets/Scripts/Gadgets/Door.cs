@@ -54,24 +54,32 @@ public class Door : Gadget
             remainingDuration = doorOpenWaitTime;
             gadgetInCountdown = true;
             doorButtonSound.Play();
-            state = DoorState.opening;
             return true;
         }
         return false;
     }
 
+    float oldLerpVal = 0.0f;
     void Update()
     {
         if(state == DoorState.opening)
         {
             if (doorOpenSound.isPlaying)
             {
-                Vector3 off = Vector3.Lerp(new Vector3(0, 0.5f, 0), new Vector3(0, 1.5f, 0), doorOpenSound.time / doorOpenSound.clip.length);
-                upperDoorObject.transform.localPosition = off;
-                lowerDoorObject.transform.localPosition = -off;
+                float lerpVal = doorOpenSound.time / doorOpenSound.clip.length;
+                if(lerpVal > oldLerpVal)
+                {
+                    Vector3 off = Vector3.Lerp(new Vector3(0, 0.5f, 0), new Vector3(0, 1.5f, 0), lerpVal);
+                    upperDoorObject.transform.localPosition = off;
+                    lowerDoorObject.transform.localPosition = -off;
+                    oldLerpVal = lerpVal;
+                }
             }
             else
             {
+                Vector3 off = new Vector3(0, 1.5f, 0);
+                upperDoorObject.transform.localPosition = off;
+                lowerDoorObject.transform.localPosition = -off;
                 state = DoorState.open;
                 DestinationDot[] allDots = FindObjectsOfType<DestinationDot>();
                 foreach (DestinationDot dd in allDots)

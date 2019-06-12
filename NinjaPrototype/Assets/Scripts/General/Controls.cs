@@ -8,6 +8,7 @@ public class Controls : MonoBehaviour
 {
     public GameObject blackscreenSprite;
     public AudioSource looseSound;
+    public AudioSource winSound;
 
     Player player;
     AudioSource audioSource;
@@ -18,6 +19,12 @@ public class Controls : MonoBehaviour
     bool playerRound = true;
 
     bool restarting;
+    bool winning;
+    bool didStart;
+
+    public string currentLoadedScene;
+    string nextLoadedScene;
+    AsyncOperation ao;
 
     List<Hoverable> newHoverables = new List<Hoverable>();
     List<Hoverable> oldHoverables = new List<Hoverable>();
@@ -39,8 +46,23 @@ public class Controls : MonoBehaviour
 
     private void Start()
     {
+        if (string.IsNullOrEmpty(currentLoadedScene))
+        {
+            WinLevel("menu");
+        }
+        else
+        {
+            StartRoutine();
+        }
+    }
+
+    void StartRoutine()
+    {
+        SceneManager.SetActiveScene(SceneManager.GetSceneByName(currentLoadedScene));
+        BlankScreen(false);
         player = FindObjectOfType<Player>();
         audioSource = GetComponent<AudioSource>();
+        didStart = true;
     }
 
     public void RestartLevel()
@@ -49,25 +71,79 @@ public class Controls : MonoBehaviour
         {
             if(!restarting)
             {
+                nextLoadedScene = currentLoadedScene;
+                AsyncOperation ao = SceneManager.UnloadSceneAsync(currentLoadedScene);
                 restarting = true;
                 looseSound.Play();
-            }
-            else
-            {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
         }
         //blackscreenSprite.SetActive(false);
     }
 
-    public void BlankScreen()
+    public void WinLevel(string levelToLoad)
     {
-        blackscreenSprite.SetActive(true);
+        if (!winSound.isPlaying)
+        {
+            if (!string.IsNullOrEmpty(currentLoadedScene))
+            {
+                AsyncOperation ao = SceneManager.UnloadSceneAsync(currentLoadedScene);
+            }
+            nextLoadedScene = levelToLoad;
+            winning = true;
+            winSound.Play();
+        }
+    }
+
+    public void BlankScreen(bool activate)
+    {
+        blackscreenSprite.SetActive(activate);
+    }
+
+    public void ClearAllForNewLevel()
+    {
+        restarting = false;
+        winning = false;
+        newHoverables.Clear();
+        oldHoverables.Clear();
+        enemys.Clear();
+        gadgets.Clear();
+        didStart = false;
     }
 
     void Update()
     {
-        if (restarting)
+        if(ao != null)
+        {
+            if (!ao.isDone)
+            {
+                return;
+            }
+            else
+            {
+                currentLoadedScene = nextLoadedScene;
+                if (!didStart)
+                {
+                    StartRoutine();
+                }
+            }
+        }
+        if (!looseSound.isPlaying)
+        {
+            if (restarting)
+            {
+                ClearAllForNewLevel();
+                ao = SceneManager.LoadSceneAsync(currentLoadedScene, LoadSceneMode.Additive);
+            }
+        }
+        if (!winSound.isPlaying)
+        {
+            if (winning)
+            {
+                ClearAllForNewLevel();
+                ao = SceneManager.LoadSceneAsync(nextLoadedScene, LoadSceneMode.Additive);
+            }
+        }
+        if (restarting || winning)
         {
             return;
         }

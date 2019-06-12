@@ -47,7 +47,7 @@ public abstract class MovingEntity : Hoverable
         }
     }
 
-    public bool GoToDot(DestinationDot d)
+    public virtual bool GoToDot(DestinationDot d)
     {
         if(currentDot != null)
         {
