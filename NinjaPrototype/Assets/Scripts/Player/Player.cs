@@ -20,7 +20,7 @@ public class Player : MovingEntity
         {
             if (!string.IsNullOrEmpty(d.levelToLoad))
             {
-                FindObjectOfType<Controls>().WinLevel(d.levelToLoad);
+                FindObjectOfType<Controls>().WinLevel(d.levelToLoad, true);
             }
         }
         return base.GoToDot(d);

@@ -10,6 +10,9 @@ public class Controls : MonoBehaviour
     public AudioSource looseSound;
     public AudioSource winSound;
 
+    public AudioSource levelMusic;
+    public AudioSource titleMusic;
+
     Player player;
     AudioSource audioSource;
     List<Enemy> enemys = new List<Enemy>();
@@ -48,7 +51,7 @@ public class Controls : MonoBehaviour
     {
         if (string.IsNullOrEmpty(currentLoadedScene))
         {
-            WinLevel("menu");
+            WinLevel("menu", false);
         }
         else
         {
@@ -80,7 +83,7 @@ public class Controls : MonoBehaviour
         //blackscreenSprite.SetActive(false);
     }
 
-    public void WinLevel(string levelToLoad)
+    public void WinLevel(string levelToLoad, bool playsound)
     {
         if (!winSound.isPlaying)
         {
@@ -90,7 +93,10 @@ public class Controls : MonoBehaviour
             }
             nextLoadedScene = levelToLoad;
             winning = true;
-            winSound.Play();
+            if (playsound)
+            {
+                winSound.Play();
+            }
         }
     }
 
@@ -121,6 +127,28 @@ public class Controls : MonoBehaviour
             else
             {
                 currentLoadedScene = nextLoadedScene;
+                if(currentLoadedScene == "menu")
+                {
+                    if (levelMusic.isPlaying)
+                    {
+                        levelMusic.Stop();
+                    }
+                    if (!titleMusic.isPlaying)
+                    {
+                        titleMusic.Play();
+                    }
+                }
+                else
+                {
+                    if (!levelMusic.isPlaying)
+                    {
+                        levelMusic.Play();
+                    }
+                    if (titleMusic.isPlaying)
+                    {
+                        titleMusic.Stop();
+                    }
+                }
                 if (!didStart)
                 {
                     StartRoutine();

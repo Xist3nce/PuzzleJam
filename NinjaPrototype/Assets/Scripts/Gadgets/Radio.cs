@@ -14,6 +14,8 @@ public class Radio : Gadget
     public GameObject keepHoverPrefab;
     public GameObject soundSprite;
 
+    public TextMesh countdown;
+
     public int[] possibleTimerDurations = { 0 };
     public List<GadgetButton> activeButtonList = new List<GadgetButton>();
 
@@ -122,6 +124,7 @@ public class Radio : Gadget
     {
         if (gadgetInCountdown)
         {
+            countdown.text = remainingDuration.ToString();
             if (remainingDuration == 0)
             {
                 TurnOn();

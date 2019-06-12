@@ -230,10 +230,11 @@ public class Enemy : MovingEntity
     }
 
     [ContextMenu("Die")]
-    public void Die()
+    public void Die(KillReason kr)
     {
         FindObjectOfType<Controls>().RemoveEnemy(this);
-        Instantiate(deadEnemyPreset, transform.position, transform.rotation);
+        GameObject deadEnemyObject = Instantiate(deadEnemyPreset, transform.position, transform.rotation);
+        deadEnemyObject.GetComponent<DeadEnemy>().PlayDieSound(kr);
         Destroy(gameObject);
     }
 }
@@ -255,4 +256,10 @@ enum State
     Patrolling,
     Investigating,
     Hunting
+}
+
+public enum KillReason
+{
+    Barrel,
+    Wires
 }

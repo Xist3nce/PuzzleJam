@@ -71,7 +71,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 4729bad13f23d394d9b2bdc56875d8cb, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -93,6 +93,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 341fb634844118c44b5f1896a10a5d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  levelToLoad: 
   outOfFocusSprite: {fileID: 21300000, guid: 4729bad13f23d394d9b2bdc56875d8cb, type: 3}
   inFocusSprite: {fileID: 21300000, guid: 89c90e37fa55b6846a7deaaf43d33e38, type: 3}
   guardAccessible: 1

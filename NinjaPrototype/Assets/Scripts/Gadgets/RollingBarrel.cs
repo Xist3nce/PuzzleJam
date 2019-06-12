@@ -93,7 +93,7 @@ public class RollingBarrel : Gadget
 
         if (EnemyInFront() && (rolling || falling))
         {
-            EnemyInFront().Die();
+            EnemyInFront().Die(KillReason.Barrel);
         }
 
         if (rolling)

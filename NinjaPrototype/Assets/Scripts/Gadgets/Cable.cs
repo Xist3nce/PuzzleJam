@@ -45,7 +45,7 @@ public class Cable : Gadget
                 Enemy enemy = c2D.GetComponent<Enemy>();
                 if (enemy)
                 {
-                    enemy.Die();
+                    enemy.Die(KillReason.Wires);
                 }
             }
         }
