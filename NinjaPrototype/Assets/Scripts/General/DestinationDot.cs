@@ -70,9 +70,13 @@ public class DestinationDot : Hoverable
                 if (!Physics2D.Linecast(transform.position, c2D.transform.position, LayerMask.GetMask("Walls")))
                 {
                     destinations.Add(dd);
-                    dd.UpdateConnection(time);
                 }
             }
+        }
+        DestinationDot[] allDots = FindObjectsOfType<DestinationDot>();
+        foreach(DestinationDot dd in allDots)
+        {
+            dd.UpdateConnection(time);
         }
         #if UNITY_EDITOR
         PrefabUtility.RecordPrefabInstancePropertyModifications(this);

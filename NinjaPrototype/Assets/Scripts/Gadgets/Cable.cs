@@ -5,6 +5,7 @@ using UnityEditor;
 
 public class Cable : Gadget
 {
+    public AudioSource stripSoundSource;
     public Sprite sparkSprite;
     public float killRadius = 0.5f;
 
@@ -46,6 +47,7 @@ public class Cable : Gadget
     {
         r.sprite = sparkSprite;
         isKilling = true;
+        stripSoundSource.Play();
     }
 
     public override void TurnOff()
@@ -60,7 +62,7 @@ public class Cable : Gadget
 
     public override bool OnClick()
     {
-        if (PlayerIsInRange())
+        if (PlayerIsInRange() && !isKilling)
         {
             TurnOn();
             return true;

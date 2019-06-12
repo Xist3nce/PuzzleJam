@@ -2,15 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class Controls : MonoBehaviour
 {
+    public GameObject blackscreenSprite;
+    public AudioSource looseSound;
+
     Player player;
+    AudioSource audioSource;
     List<Enemy> enemys = new List<Enemy>();
     List<Gadget> gadgets = new List<Gadget>();
 
     bool roundStart = true;
     bool playerRound = true;
+
+    bool restarting;
 
     List<Hoverable> newHoverables = new List<Hoverable>();
     List<Hoverable> oldHoverables = new List<Hoverable>();
@@ -33,10 +40,37 @@ public class Controls : MonoBehaviour
     private void Start()
     {
         player = FindObjectOfType<Player>();
+        audioSource = GetComponent<AudioSource>();
+    }
+
+    public void RestartLevel()
+    {
+        if (!looseSound.isPlaying)
+        {
+            if(!restarting)
+            {
+                restarting = true;
+                looseSound.Play();
+            }
+            else
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
+        }
+        //blackscreenSprite.SetActive(false);
+    }
+
+    public void BlankScreen()
+    {
+        blackscreenSprite.SetActive(true);
     }
 
     void Update()
     {
+        if (restarting)
+        {
+            return;
+        }
         Collider2D[] allColliders = Physics2D.OverlapPointAll(Camera.main.ScreenToWorldPoint(Input.mousePosition));
         newHoverables.Clear();
         foreach (Collider2D c2D in allColliders)
@@ -65,6 +99,11 @@ public class Controls : MonoBehaviour
             }
         }
         oldHoverables = newHoverables.ToList();
+
+        /*if (audioSource.isPlaying)
+        {
+            return;
+        }*/
 
         if (playerRound)
         {
@@ -156,6 +195,7 @@ public class Controls : MonoBehaviour
                 {
                     roundStart = true;
                     playerRound = true;
+                    //audioSource.Play();
                 }
             }
         }

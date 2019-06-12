@@ -6,6 +6,9 @@ using System.Linq;
 
 public class Radio : Gadget
 {
+    public AudioSource clickSoundSource;
+    public AudioSource AnnoySoundSource;
+
     public GameObject gadgetButtonPrefab;
     public GameObject rangeIndicatorPrefab;
     public GameObject keepHoverPrefab;
@@ -92,17 +95,20 @@ public class Radio : Gadget
     {
         remainingDuration = duration;
         gadgetInCountdown = true;
+        clickSoundSource.Play();
         HideButtons();
     }
 
     public override void TurnOn()
     {
+        AnnoySoundSource.Play();
         soundSprite.SetActive(true);
         alerting = true;
     }
 
     public override void TurnOff()
     {
+        AnnoySoundSource.Stop();
         soundSprite.SetActive(false);
         alerting = false;
     }
@@ -132,7 +138,7 @@ public class Radio : Gadget
 
     public override bool OnClick()
     {
-        if (PlayerIsInRange())
+        if (PlayerIsInRange() && !alerting)
         {
             HideButtons();
             TurnOn();

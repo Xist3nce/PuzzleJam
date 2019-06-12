@@ -9,6 +9,9 @@ public class Enemy : MovingEntity
 
     public GameObject exclamationObject;
     public GameObject confusedObject;
+    public AudioSource gunSound;
+    public AudioSource confusedSound;
+    public AudioSource evidenceSound;
 
     public List<DestinationDot> path;
     public int standTime = 2;
@@ -16,6 +19,9 @@ public class Enemy : MovingEntity
     Gadget currentGadgetTarget;
     int stepsLeftTillStateChange;
     int pathPos = 0;
+
+    bool preparingToShoot = false;
+    bool endLevelAfterShot;
 
     State state = State.Patrolling;
 
@@ -141,20 +147,53 @@ public class Enemy : MovingEntity
         }
     }
 
+    public override void Update()
+    {
+        base.Update();
+        if(preparingToShoot)
+        {
+            if (!evidenceSound.isPlaying && !gunSound.isPlaying && !endLevelAfterShot)
+            {
+                FindObjectOfType<Controls>().BlankScreen();
+                gunSound.Play();
+                endLevelAfterShot = true;
+            }
+            if (endLevelAfterShot)
+            {
+                if (!gunSound.isPlaying)
+                {
+                    FindObjectOfType<Controls>().RestartLevel();
+                }
+            }
+        }
+    }
+
+    public override bool IsReady()
+    {
+        if (preparingToShoot)
+        {
+            return false;
+        }
+        return base.IsReady();
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Ninja"))
         {
             exclamationObject.SetActive(true);
+            //gunSound.transform.rotation = Quaternion.LookRotation(other.transform.position - transform.position, Vector2.up);
+            evidenceSound.Play();
+            preparingToShoot = true;
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("Ninja"))
+        /*if (other.gameObject.CompareTag("Ninja"))
         {
             exclamationObject.SetActive(false);
-        }
+        }*/
     }
 
     public void OnAlert(Vector2 pos, DestinationDot dot, Gadget g)
@@ -168,6 +207,7 @@ public class Enemy : MovingEntity
     {
         if(state != State.Investigating && newState == State.Investigating)
         {
+            confusedSound.Play();
             confusedObject.SetActive(true);
         }
 

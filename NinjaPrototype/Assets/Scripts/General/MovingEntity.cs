@@ -6,6 +6,7 @@ public abstract class MovingEntity : Hoverable
 {
     public float moveTime = 0.4f;
 
+    public AudioSource audioSource;
     public DestinationDot currentDot;
 
     float moveStartTime;
@@ -30,13 +31,17 @@ public abstract class MovingEntity : Hoverable
         transform.position = currentDot.transform.position;
     }
 
-    public void Update()
+    public virtual void Update()
     {
         if (isMoving)
         {
             transform.position = Vector3.Lerp(moveStartPos, currentDot.transform.position, (Time.time - moveStartTime) / moveTime);
             if(Time.time - moveStartTime > moveTime)
             {
+                if (audioSource.isPlaying)
+                {
+                    //audioSource.Stop();
+                }
                 isMoving = false;
             }
         }
@@ -51,6 +56,7 @@ public abstract class MovingEntity : Hoverable
                 return false;
             }
         }
+        audioSource.Play();
         currentDot = d;
         moveStartTime = Time.time;
         moveStartPos = transform.position;
@@ -84,7 +90,7 @@ public abstract class MovingEntity : Hoverable
         transform.rotation *= Quaternion.Euler(0.0f, 180.0f, 0.0f);
     }
 
-    public bool IsReady()
+    public virtual bool IsReady()
     {
         return !isMoving;
     }

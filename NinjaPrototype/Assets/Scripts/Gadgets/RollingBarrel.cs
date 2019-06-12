@@ -5,6 +5,10 @@ using UnityEditor;
 
 public class RollingBarrel : Gadget
 {
+    public AudioClip tippingAudio;
+    public AudioClip rollingAudio;
+    public AudioClip hitAudio;
+
     public Transform barrelVisuals;
     public GameObject soundSprite;
 
@@ -18,6 +22,7 @@ public class RollingBarrel : Gadget
     float radius;
     LayerMask wallsLayer;
     LayerMask enemiesLayer;
+    AudioSource audioSource;
 
     #if UNITY_EDITOR
     public new void OnDrawGizmosSelected()
@@ -31,6 +36,9 @@ public class RollingBarrel : Gadget
     public override void Start()
     {
         base.Start();
+        audioSource = GetComponent<AudioSource>();
+        audioSource.clip = tippingAudio;
+        audioSource.Play();
         wallsLayer = LayerMask.GetMask("Walls");
         enemiesLayer = LayerMask.GetMask("Enemies");
         radius = GetComponent<CircleCollider2D>().radius;
@@ -38,6 +46,16 @@ public class RollingBarrel : Gadget
 
     void Update()
     {
+        if (audioSource.clip == tippingAudio)
+        {
+            if (audioSource.isPlaying)
+            {
+                return;
+            }
+            audioSource.clip = rollingAudio;
+            audioSource.Play();
+        }
+
         if (falling)
         {
             if (GetGroundDistance() > radius + 0.05f)
@@ -49,6 +67,8 @@ public class RollingBarrel : Gadget
                 downMomentum = 0.0f;
                 if (!rolling)
                 {
+                    audioSource.clip = hitAudio;
+                    audioSource.Play();
                     soundSprite.SetActive(true);
                     AlertEnemies(alertRadius);
                     falling = false;
