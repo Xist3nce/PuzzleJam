@@ -168,7 +168,14 @@ public class Controls : MonoBehaviour
             if (winning)
             {
                 ClearAllForNewLevel();
-                ao = SceneManager.LoadSceneAsync(nextLoadedScene, LoadSceneMode.Additive);
+                if(nextLoadedScene == "end")
+                {
+                    SceneManager.LoadScene("end");
+                }
+                else
+                {
+                    ao = SceneManager.LoadSceneAsync(nextLoadedScene, LoadSceneMode.Additive);
+                }
             }
         }
         if (restarting || winning)

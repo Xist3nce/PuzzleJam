@@ -535,7 +535,7 @@ MonoBehaviour:
     type: 3}
   soundSprite: {fileID: 7507448057479647876}
   countdown: {fileID: 7738293302372611306}
-  possibleTimerDurations: 00000000010000000200000003000000
+  possibleTimerDurations: 01000000020000000300000004000000
   activeButtonList: []
   alertRadius: 16
   alerting: 0
