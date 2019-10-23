@@ -16,13 +16,17 @@ public class Player : MovingEntity
 
     public override bool GoToDot(DestinationDot d)
     {
+        bool baseGoToDot = base.GoToDot(d);
         if (d)
         {
-            if (!string.IsNullOrEmpty(d.levelToLoad))
+            if (baseGoToDot)
             {
-                FindObjectOfType<Controls>().WinLevel(d.levelToLoad, true);
+                if (!string.IsNullOrEmpty(d.levelToLoad))
+                {
+                    FindObjectOfType<Controls>().WinLevel(d.levelToLoad, true);
+                }
             }
         }
-        return base.GoToDot(d);
+        return baseGoToDot;
     }
 }
